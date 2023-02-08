@@ -4,6 +4,17 @@ import processing.core.PApplet;
 
 public class BugZap extends PApplet
 {
+	float playerX = 0.0f;
+	float playerY = 0.0f;
+	float playerWidth = 50.0f;
+	float h;
+	float bugX = 0.0f;
+	float bugY = 0.0f;
+	float bugWidth = 20.0f;
+	int score = 0;
+	float halfBug;
+	float halfPlayer;
+
 
 	public void settings()
 	{
@@ -13,55 +24,93 @@ public class BugZap extends PApplet
 	public void setup() {
 		colorMode(HSB);
 		background(0);
-
-		x1 = random(0, width);
-		x2 = random(0, width);
-		y1 = random(0, height);
-		y2 = random(0, height);
-
-		float range = 5;
-
-		x1dir = random(-range, range);
-		x2dir = random(-range, range);
-		y1dir = random(-range, range);
-		y2dir = random(-range, range);
-
 		smooth();
+		resetBug();
+
+		// playerX = width * 0.5f;
+		// playerY = height - 100;
+		
+		// bugX = width/2;
+		// bugY = bugWidth;
 		
 	}
 
-	float x1, y1, x2, y2;
-	float x1dir, x2dir, y1dir, y2dir;
+
 	float c = 0;
 	
 	public void draw()
 	{	
-		strokeWeight(2);
-		stroke(c, 255, 255);
-		c = (c + 1f) % 255;
-		line(x1, y1, x2, y2);
+		// strokeWeight(2);
+		background(0);
+		stroke(43, 232, 106);
+		drawPlayer(playerX, playerY, playerWidth);
 
-		x1 += x1dir;
-		x2 += x2dir;
-		y1 += y1dir;
-		y2 += y2dir;
+		drawBug(bugX, bugY, bugWidth);
+
+		if ((frameCount % 60) == 0) {
+			bugX += random(-10.0f, 10.0f);
+		}
 		
-		if (x1 < 0 || x1 > width)
-		{
-			x1dir = - x1dir;
-		}
-		if (y1 < 0 || y1 > height)
-		{
-			y1dir = - y1dir;
-		}
 
-		if (x2 < 0 || x2 > width)
+
+	}
+
+	void resetBug()
+	{
+		bugY = 50;
+		bugWidth = 50;
+		halfBug = bugWidth * 0.5f;
+		bugX = random(halfBug, width - halfBug);
+
+
+    }
+	
+
+	public void drawPlayer(float x, float y, float w) {
+
+		rectMode(CENTER);
+		rect(w, x, y, w);
+		// h = w * 0.5f;
+		noFill();
+		stroke(255, 0, 0);
+		line(x, y - halfPlayer, x, y - halfPlayer * 2);
+		
+
+	}
+
+	public void drawBug(float x, float y, float w) {
+
+		// float h = w * 0.5f;
+		stroke(0, 255, 0);
+		line(x, y - halfBug, x, y - halfBug * 2);
+		
+
+	}
+
+	public void keyPressed()
+	{
+		if (keyCode == LEFT)
 		{
-			x2dir = - x2dir;
+			// System.out.println("Left arrow pressed");
+			playerX --;
+			if(playerX < 0){
+				playerX = 0;
+				// System.out.println("Gone out of bounds");
+			}
 		}
-		if (y2 < 0 || y2 > height)
+		if (keyCode == RIGHT)
 		{
-			y2dir = - y2dir;
+			// System.out.println("Right arrow pressed");
+			playerX ++;
+			if(playerX > width) {
+				playerX = width;
+			}
+		}
+		if (key == ' ')
+		{
+			// System.out.println("SPACE key pressed");
+			stroke(255, 255, 0);
+			line(playerX, playerY - halfPlayer, playerX, 0);
 		}
 	}
 }
