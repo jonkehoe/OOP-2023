@@ -2,15 +2,13 @@ package ie.tudublin;
 
 import processing.core.PApplet;
 
-
 public class Loops extends PApplet {
 
 	int mode = 0;
-	int i;
-	int j;
 
 	public void settings() {
 		size(1000, 1000);
+		//fullScreen(SPAN);
 	}
 
 	public void setup() {
@@ -23,40 +21,31 @@ public class Loops extends PApplet {
 		println(mode);
 	}
 
+	float off = 0;
+
 	public void draw() {
 		background(0);
-		// fill(255);
-		// noStroke();
-		colorMode(HSB, 400);
+		fill(255);
 		noStroke();
 
-		// for(i=0;i<10;i++) {
-		// for(j=0;j<10;j++) {
-
-		// float hue = map(i, 0, 9, 0, 360);
-		// float saturation = map(j, 0, 9, 0, 100);
-		// float brightness = 100;
-		// fill(hue, saturation, brightness);
-		// noStroke();
-		// ellipse(i * 100 + 50, j * 100 + 50, 100, 100);
-		// }
-		// }
-
 		switch (mode) {
-
 			case 0:
-
-				int numCircle = 12; 
-				float d = width / numCircle;
-				for (j = 0; j < numCircle; j++) {
-					for (i = 0; i < numCircle; i++) {
+				int numCircles = (int) max(1, mouseX / 50.0f);
+				float d = width / numCircles;
+				for (int j = 0; j < numCircles; j++) {
+					for (int i = 0; i < numCircles; i++) {
 						float x = (d * 0.5f) + (d * i);
 						float y = (d * 0.5f) + (d * j);
-						float c = ((i + j) / (numCircle * 2.0f)) * 255.0f;
-						fill(c, 255, 255);
+						float c = ((i + j) / ((numCircles - 1) * 2.0f)) * 255.0f;
+						fill((c + off) % 256, 255, 255);
 						circle(x, y, d);
 					}
 				}
+				off += (mouseY / 50.0f);
+				break;
+			case 1:
+				break;
+			default:
 				break;
 		}
 
