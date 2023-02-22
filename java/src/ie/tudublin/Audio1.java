@@ -19,6 +19,8 @@ public class Audio1 extends PApplet
     float smoothedY = 0;
     float smoothedAmplitude = 0;
 
+    float[] LerpSamples;
+
     public void keyPressed() {
 		if (key >= '0' && key <= '9') {
 			mode = key - '0';
@@ -30,6 +32,9 @@ public class Audio1 extends PApplet
                 ap.rewind();
                 ap.play();
             }
+        }
+        if(key == '5') {
+            mode = 5;
         }
 	}
 
@@ -43,17 +48,20 @@ public class Audio1 extends PApplet
     {
         minim = new Minim(this);
         // Uncomment this to use the microphone
-        // ai = minim.getLineIn(Minim.MONO, width, 44100, 16);
-        // ab = ai.mix; 
+        ai = minim.getLineIn(Minim.MONO, width, 44100, 16);
+        ab = ai.mix; 
 
         // And comment the next two lines out
-        ap = minim.loadFile("heroplanet.mp3", 1024);
-        ap.play();
-        ab = ap.mix;
+        // ap = minim.loadFile("heroplanet.mp3", 1024);
+        // ap.play();
+        // ab = ap.mix;
         colorMode(HSB);
 
         y = height / 2;
         smoothedY = y;
+
+        // initialize the lerpedSamples array with the same size as the buffer
+        LerpSamples = new float[ab.size()];
 
     }
 
@@ -65,13 +73,18 @@ public class Audio1 extends PApplet
         float halfH = height / 2;
         float average = 0;
         float sum = 0;
+        float buffer = 0;
         off += 1;
         // Calculate sum and average of the samples
         // Also lerp each element of buffer;
         for(int i = 0 ; i < ab.size() ; i ++)
         {
             sum += abs(ab.get(i));
+            LerpSamples[i] = lerp(LerpSamples[i], ab.get(i), 0.1f);
         }
+
+        
+
         average= sum / (float) ab.size();
 
         smoothedAmplitude = lerp(smoothedAmplitude, average, 0.1f);
@@ -91,8 +104,15 @@ public class Audio1 extends PApplet
                     line(i, halfH + f, i, halfH - f);                    
                 }
                 break;
-        case 1:
-            background(0);            
+            case 5:
+                background(0);
+
+                float size = 0;
+                size += 1.0;
+
+                fill(255, 0, 0);
+                ellipse(width/2, height/2, size, size);
+
             break;
 
         }
