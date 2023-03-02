@@ -1,7 +1,6 @@
 package ie.tudublin;
 
 import ddf.minim.AudioBuffer;
-// import ddf.minim.AudioBuffer;
 import ddf.minim.AudioInput;
 import ddf.minim.AudioPlayer;
 import ddf.minim.Minim;
@@ -17,6 +16,8 @@ public class Audio2 extends PApplet{
 
     FFT fft;
 
+    PitchSpeller ps = new PitchSpeller();
+
     public void settings()
     {
         size(1024, 1024);
@@ -30,6 +31,8 @@ public class Audio2 extends PApplet{
         lerpedBuffer = new float[width];
 
         fft = new FFT(width, 44100);
+
+        PitchSpeller = new PitchSpeller();
     }
 
     float[] lerpedBuffer;
@@ -66,11 +69,20 @@ public class Audio2 extends PApplet{
         textSize(20);
         text("Freq: " + freq, 100, 100);
 
+        String note = ps.spell(freq);
+        fill(255);
+        textSize(20);
+        text("Note: " + note, 100, 130);
+
         float y = map(freq, 1000.0f, 2500.0f, height, 0);
         lerpedY = lerp(lerpedY, y, 0.1f);
         circle(200, y, 50);
         circle(300, lerpedY, 50);
         
+
+        String spelling = pitchSpeller.spell(freq);
+        text("Note: " + spelling, 100, 130);
+
 
 
 
@@ -88,4 +100,25 @@ public class Audio2 extends PApplet{
 
         return d + (howFar / range1) * range2;
     }
+
+    public class PitchSpeller {
+        private float[] frequency = { 261.63f, 293.66f, 329.63f, 349.23f, 392.00f, 440.00f, 493.88f };
+        private String[] spellings = { "C", "D", "E", "F", "G", "A", "B" };
+    
+        public String spell(float frequency) {
+            int index = 0;
+            float minDist = Float.MAX_VALUE;
+            for (int i = 0; i < this.frequency.length; i++) {
+                float dist = Math.abs(this.frequency[i] - frequency);
+                if (dist < minDist) {
+                    index = i;
+                    minDist = dist;
+                }
+            }
+            return spellings[index];
+        }
+    }
 }
+
+
+
