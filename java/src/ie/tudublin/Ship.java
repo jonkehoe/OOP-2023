@@ -18,6 +18,36 @@ public class Ship {
         this.p = p;  
     }
 
+    public class AIShip extends Ship {
+        private ArrayList<PVector> path;
+        private int currentTargetIndex = 0;
+
+        public AIShip(float x, float y, float size, int c, PApplet p , ArrayList<PVector> path){
+            
+            super(x, y, size, c, p);
+            this.path = path;
+            this.currentTargetIndex = 0;
+
+        }
+        
+        @Override
+        public void move() {
+            PVector currentTarget = path.get(currentTargetIndex);
+            PVector direction = PVector.sub(currentTarget, pos);
+            direction.normalize();
+            PVector velocity = PVector.mult(direction, 3);
+            pos.add(velocity);
+
+            float distToTarget = PVector.dist(pos, currentTarget);
+            if (distToTarget < 10) {
+                currentTargetIndex++;
+                if (currentTargetIndex >= path.size()) {
+                    currentTargetIndex = 0;
+                }
+            }
+        }
+    }
+
 
 
     public PVector getPos() {
